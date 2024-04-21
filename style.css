@@ -1,0 +1,62 @@
+body{
+    overflow: hidden;
+}
+
+.content {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+}
+
+.canvas-container {
+    /* left: 0; */
+    width: 80%;
+    height: 100vh;
+}
+
+.left-bar {
+    /* width: 500px; */
+    width: 20%;
+    height: 100vh;
+    background-color: rgb(200, 200, 200);
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    /* margin-left: 20px; */
+    margin: 10px;
+}
+
+.input {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    /* margin-left: 20px; */
+    margin: 10px;
+    border: 4px black;
+    height: 30px;
+    gap: 10px;
+}
+
+.input input {
+    width: 150px;
+}
+
+.items {
+    border: 1px solid rgb(54, 54, 54);
+    
+}
+
+/* .column{
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.row{
+    height: 30px;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+} */
