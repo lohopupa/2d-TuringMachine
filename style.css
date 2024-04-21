@@ -14,10 +14,16 @@ body{
     height: 100vh;
 }
 
+.left-bar-wrapper {
+    width: 20%;
+
+}
+
 .left-bar {
     /* width: 500px; */
-    width: 20%;
-    height: 100vh;
+    height: 95vh;
+    
+    overflow-y: auto;
     background-color: rgb(200, 200, 200);
 }
 
