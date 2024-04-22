@@ -1,4 +1,23 @@
 
+class Rule {
+    constructor(s, r, w, d, n) {
+        this.state = s
+        this.read = r
+        this.write = w
+        this.dir = d
+        this.next = n
+    }
+
+    static fromStr(str) {
+        const x = str.split(" ")
+        if (x.length != 5){
+            throw "Could not parse string to rule"
+        }
+        const [s, r, w, d, n] = x
+        return new Rule(s, r, w, d, n)
+    }
+}
+
 class TuringMachine {
     width = 10
     height = 10
@@ -7,17 +26,81 @@ class TuringMachine {
     carriageX = 0
     carriageY = 0
 
-    constructor(w, h, f) {
+    nextState = undefined
+
+    constructor(w, h, f, rules) {
         this.width = w
         this.height = h
         this.fillWith = f
-        this.state = Array(w).fill(Array(h).fill(f))
+        // this.state = Array(w).fill(Array(h).fill(0))
+        this.state = []
+        for(let x = 0; x < w; x++){
+            this.state.push([])
+            for(let y = 0; y < h; y++){
+                this.state[x].push(f)
+            }
+        }
+        this.rules = rules
+    }
+
+    step() {
+        if (!this.nextState) {
+            this.nextState = this.rules.find((r) => r.read == this.read()).state
+            if (!this.nextState) {
+                alert("Could not find any applicable rule")
+                throw "Could not find any applicable rule"
+            }
+        }
+        const r = this.rules.find((r) => this.nextState == r.state && r.read == this.read())
+        if (!r) {
+            alert("Could not find any applicable rule")
+            throw "Could not find any applicable rule"
+        }
+        this.write(r.write)
+        this.move(r.dir)
+        this.nextState = r.next
+        console.log(this.carriageX, this.carriageY)
+        console.log(r)
+    }
+
+    move(dir) {
+        switch (dir) {
+            case "U": {
+                if (this.carriageY <= 0) return false
+                this.carriageY -= 1
+                break
+            }
+            case "D": {
+                if (this.carriageY >= this.height - 1) return false
+                this.carriageY += 1
+                break
+            }
+            case "R": {
+                if (this.carriageX >= this.width - 1) return false
+                this.carriageX += 1
+                break
+            }
+            case "L": {
+                if (this.carriageX <= 0) return false
+                this.carriageX -= 1
+                break
+            }
+        }
+        return true
+    }
+
+    read() {
+        return this.state[this.carriageX][this.carriageY]
+    }
+
+    write(val) {
+        this.state[this.carriageX][this.carriageY] = val
     }
 
 }
 
 
-let tm = new TuringMachine(10, 10, 0)
+let tm = new TuringMachine(10, 10, 0, [])
 
 const parametersLayout = {
     "type": "container",
@@ -64,12 +147,15 @@ const parametersLayout = {
                 {
                     "type": "button",
                     "title": "Step",
-                    "action": ()=>alert("Step")
+                    "action": ()=>{
+                        tm.step()
+                        render()
+                    }
                 },
                 {
                     "type": "button",
                     "title": "Run",
-                    "action": ()=>alert("Run")
+                    "action": () => alert("Run is not implemented yet")
                 }
             ]
         }
@@ -80,7 +166,8 @@ function onApplySettingsButton() {
     const prms = getParameters(parametersLayout)
     console.log(prms)
     const { width, height, fill_with } = prms["grid"]
-    tm = new TuringMachine(width, height, fill_with)
+    const rules = prms["turing_machine"]["rules"].split("\n").map(s=>Rule.fromStr(s))
+    tm = new TuringMachine(width, height, fill_with, rules)
     render()
 }
 
@@ -225,7 +312,7 @@ function render() {
         for (let y = 0; y < tm.height; y++) {
             ctx.fillStyle = "rgb(200, 200, 200)"
             ctx.strokeStyle = "rgb(20, 20, 20)"
-            if(x == tm.carriageX && y == tm.carriageY){
+            if (x == tm.carriageX && y == tm.carriageY) {
                 ctx.fillStyle = "rgb(200, 255, 200)"
 
             }
