@@ -42,7 +42,7 @@ const parametersLayout = {
                 {
                     "type": "input",
                     "title": "Fill with",
-                    "valueType": "int",
+                    "valueType": "text",
                     "default": tm.fillWith,
                 }
             ]
@@ -51,12 +51,34 @@ const parametersLayout = {
             "type": "button",
             "title": "Apply",
             "action": onApplySettingsButton
+        },
+        {
+            "type": "container",
+            "title": "Turing Machine",
+            "items": [
+                {
+                    "type": "textarea",
+                    "title": "Rules",
+                    "valueType": "text"
+                },
+                {
+                    "type": "button",
+                    "title": "Step",
+                    "action": ()=>alert("Step")
+                },
+                {
+                    "type": "button",
+                    "title": "Run",
+                    "action": ()=>alert("Run")
+                }
+            ]
         }
     ]
 }
 
 function onApplySettingsButton() {
     const prms = getParameters(parametersLayout)
+    console.log(prms)
     const { width, height, fill_with } = prms["grid"]
     tm = new TuringMachine(width, height, fill_with)
     render()
@@ -80,7 +102,8 @@ function getParameters(prm, parentId = "") {
                     return acc
                 }, {})
         }
-        case "input": {
+        case "input":
+        case "textarea": {
             const v = document.getElementById(elementId).value
             switch (prm.valueType) {
                 case "int":
@@ -90,11 +113,12 @@ function getParameters(prm, parentId = "") {
                         throw `Value in field \"${prm["title"]}\" is not Integer`
                     }
                     return x
+                case "text":
+                    return v
             }
         }
         case "button": break
     }
-
 }
 
 function getParameterId(prm, parentId = "") {
@@ -130,11 +154,29 @@ function parameters2Html(prm, parentId = "") {
             div.appendChild(input)
             return div
         }
+        case "textarea": {
+            const div = document.createElement('div');
+            div.className = "textarea"
+            const title = document.createElement("p")
+            title.textContent = prm.title
+            const input = document.createElement("textarea")
+            input.type = "text"
+            input.placeholder = "Type rules here"
+            input.rows = 10
+            input.cols = 40
+            input.id = getParameterId(prm, parentId)
+            div.appendChild(title)
+            div.appendChild(input)
+            return div
+        }
         case "button": {
+            const div = document.createElement('div');
+            div.className = "textarea"
             const btn = document.createElement("button")
             btn.textContent = prm.title
             btn.addEventListener("click", prm.action)
-            return btn
+            div.appendChild(btn)
+            return div
         }
     }
 

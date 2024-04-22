@@ -1,5 +1,6 @@
 body{
     overflow: hidden;
+    background-color: rgb(30, 30, 30);
 }
 
 .content {
@@ -10,13 +11,17 @@ body{
 
 .canvas-container {
     /* left: 0; */
-    width: 80%;
+    width: 70%;
     height: 100vh;
 }
 
 .left-bar-wrapper {
-    width: 20%;
+    width: 30%;
 
+    background-color: rgb(200, 200, 200);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .left-bar {
@@ -24,7 +29,6 @@ body{
     height: 95vh;
     
     overflow-y: auto;
-    background-color: rgb(200, 200, 200);
 }
 
 .container {
@@ -32,6 +36,23 @@ body{
     flex-direction: column;
     /* margin-left: 20px; */
     margin: 10px;
+}
+
+/* .container button {
+    color: brown;
+} */
+
+.button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    /* margin-left: 20px; */
+    margin: 10px;
+}
+
+.button button {
+    width: fit-content;
 }
 
 .input {
@@ -49,6 +70,16 @@ body{
     width: 150px;
 }
 
+.textarea {
+    display: flex;
+    flex-direction: column;
+    margin: 10px;
+    border: 4px black;
+}
+
+.textarea textarea{
+    resize: none;
+}
 .items {
     border: 1px solid rgb(54, 54, 54);
     
