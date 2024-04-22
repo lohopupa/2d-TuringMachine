@@ -8,7 +8,7 @@ class Rule {
         this.next = n
     }
 
-    static fromStr(str) {
+    static fromStr(str) {   
         const x = str.split(" ")
         if (x.length != 5){
             alert("Could not parse string to rule")
@@ -358,4 +358,3 @@ function render() {
         }
     }
 }
-
