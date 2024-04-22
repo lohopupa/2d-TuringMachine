@@ -11,7 +11,8 @@ class Rule {
     static fromStr(str) {
         const x = str.split(" ")
         if (x.length != 5){
-            throw "Could not parse string to rule"
+            alert("Could not parse string to rule")
+            throw `Could not parse string ${str} to rule`
         }
         const [s, r, w, d, n] = x
         return new Rule(s, r, w, d, n)
@@ -28,7 +29,7 @@ class TuringMachine {
 
     nextState = undefined
 
-    constructor(w, h, f, rules) {
+    constructor(w, h, f) {
         this.width = w
         this.height = h
         this.fillWith = f
@@ -40,20 +41,21 @@ class TuringMachine {
                 this.state[x].push(f)
             }
         }
-        this.rules = rules
     }
 
-    step() {
+    step(rules, al=false) {
+        this.rules = rules
         if (!this.nextState) {
             this.nextState = this.rules.find((r) => r.read == this.read()).state
             if (!this.nextState) {
-                alert("Could not find any applicable rule")
+                this.nextState = undefined
+                if(!al)alert("Could not find any applicable rule")
                 throw "Could not find any applicable rule"
             }
         }
         const r = this.rules.find((r) => this.nextState == r.state && r.read == this.read())
         if (!r) {
-            alert("Could not find any applicable rule")
+            if (!al)alert("Could not find any applicable rule")
             throw "Could not find any applicable rule"
         }
         this.write(r.write)
@@ -97,10 +99,15 @@ class TuringMachine {
         this.state[this.carriageX][this.carriageY] = val
     }
 
+    run(rules){
+        while(true){
+            this.step(rules, true)
+        }
+    }
 }
 
 
-let tm = new TuringMachine(10, 10, 0, [])
+let tm = new TuringMachine(10, 10, 0)
 
 const parametersLayout = {
     "type": "container",
@@ -147,27 +154,51 @@ const parametersLayout = {
                 {
                     "type": "button",
                     "title": "Step",
-                    "action": ()=>{
-                        tm.step()
-                        render()
-                    }
+                    "action": onStepButton
                 },
                 {
                     "type": "button",
                     "title": "Run",
-                    "action": () => alert("Run is not implemented yet")
+                    "action": onRunButton
                 }
             ]
         }
     ]
 }
 
+function onRunButton(){
+    const prms = getParameters(parametersLayout)
+
+    const rules = prms["turing_machine"]["rules"].split("\n").map(s=>Rule.fromStr(s))
+    if(rules.length == 0){
+        alert("There is no rules to run")
+        throw "There is no rules to run"
+    } 
+    try {
+        tm.run(rules)
+    }catch{
+        console.log("Turing machine done!")
+    }
+    render()
+}
+
+function onStepButton(){
+    const prms = getParameters(parametersLayout)
+
+    const rules = prms["turing_machine"]["rules"].split("\n").map(s=>Rule.fromStr(s))
+    if(rules.length == 0){
+        alert("There is no rules to run")
+        throw "There is no rules to run"
+    } 
+    tm.step(rules)
+    render()
+}
+
 function onApplySettingsButton() {
     const prms = getParameters(parametersLayout)
     console.log(prms)
     const { width, height, fill_with } = prms["grid"]
-    const rules = prms["turing_machine"]["rules"].split("\n").map(s=>Rule.fromStr(s))
-    tm = new TuringMachine(width, height, fill_with, rules)
+    tm = new TuringMachine(width, height, fill_with)
     render()
 }
 
