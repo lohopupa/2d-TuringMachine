@@ -11,6 +11,10 @@
 - [ ] Visual filling cells with values
 - [ ] REFACTOR SHIT CODE
 
+### Examples
+- [ ] Rule 110
+- [ ] Game of life
+
 ### Done ✓
 
 - [x] Implement basic 2d turing machine with visualization 
